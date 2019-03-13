@@ -16,7 +16,7 @@ C To run: gfortran -O3 -freal-8-real-16 hw4.f -o hw4 && ./hw4 && cat output
 C Results are written to 'output'
 C Raw timeseries data is written to the file 'timeseries'
           implicit none
-          integer N, i, numsteps, ncases, outfile, timeseriesfile,
+          integer N, i, numsteps, outfile, timeseriesfile,
      &            idxstart, idxend, ierr
 C         Number of data points
           parameter (N               = 10000)
@@ -25,8 +25,7 @@ C         Number of data points
 C         Timeseries data, high and low frequencies (Hz), 
 C         the total timespan (sec), and the time interval between measurements
           real*16 timeseries(N), t(N), highfreq, lowfreq, 
-     &           displacements(5),
-     &           timespan, timedelta, accumulator, accuracy,
+     &           displacements(5), timespan, timedelta, accuracy, 
      &           displacement, jitter, stability
 C         10 seconds of data
           parameter (timespan  = 10.0)
