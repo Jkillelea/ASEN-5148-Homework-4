@@ -48,11 +48,11 @@ C         Input/Output
 
           write (outfile, *) "Initial Conditions"
           write (outfile, 9999) "High frequency", highfreq
-          write (outfile, 9999) "Low frequency", lowfreq
-          write (outfile, 9999) "Time span", timespan
-          write (outfile, 9999) "Time delta", timedelta
-          write (outfile, 9998) "Num Steps", numsteps
-          write (outfile, 9998) "N", N
+          write (outfile, 9999) "Low frequency",  lowfreq
+          write (outfile, 9999) "Time span",      timespan
+          write (outfile, 9999) "Time delta",     timedelta
+          write (outfile, 9998) "Num Steps",      numsteps
+          write (outfile, 9998) "N",              N
 
           write (outfile, *) "Results"
 C         Compute pointing error over the timeseries
@@ -76,17 +76,23 @@ C         Jitter
           write (outfile, 9999) "Jitter", jitter
 
 C         Stability - t_d = 2sec, then rms them all
-          do 40 i = 0, 4
+          do 20 i = 0, 4
               idxstart = int(2*i/timedelta) + 1
               idxend   = idxstart + 2/timedelta
               displacements(i+1) = sum(timeseries(idxstart:idxend)) 
      &                                / (idxend - idxstart)
-40        continue
+20        continue
         
           stability = sum((displacements(1:4)-displacements(2:5))**2)
           stability = stability / 4
 
           write (outfile, 9999) "Stability", stability
+
+C         Close output file
+          close(outfile, iostat=ierr)
+          if (ierr .ne. 0) then
+              print *, "Couldn't close file 'output'"
+          end if
 
 C         Write out pointing error over time for separate analysis
           open(timeseriesfile, file="timeseries", form="formatted", 
@@ -98,22 +104,16 @@ C         Write out pointing error over time for separate analysis
 
           write (timeseriesfile, *)
      &          "# Time (s), Pointing error (arcsec)"
-          do 50 i = 1,numsteps
+          do 30 i = 1,numsteps
             write (timeseriesfile, "(2f8.4)") t(i), timeseries(i)
-50        continue
-
-C         Close output files            
-          close(outfile, iostat=ierr)
-          if (ierr .ne. 0) then
-              print *, "Couldn't close file 'output'"
-          end if
+30        continue
 
           close(timeseriesfile, iostat=ierr)
           if (ierr .ne. 0) then
               print *, "Couldn't close file 'timeseries'"
           end if
 
-C         Done.
+C         Done
           stop
 
 C         Label + integer
