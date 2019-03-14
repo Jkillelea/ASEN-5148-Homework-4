@@ -59,14 +59,17 @@ C         Compute pointing error over the timeseries
           do 10 i = 0,numsteps-1
             t(i+1) = i*timedelta
 10        continue
+
           timeseries = sin(lowfreq*t) + sin(highfreq*t)
 
 C         Pointing accuracy - RMS of pointing error over time
           accuracy = sqrt(sum(timeseries**2) / N)
+
           write (outfile, 9999) "Accuracy", accuracy
 
 C         Pointing displacement - mean of pointing error over time
           displacement = sum(timeseries) / numsteps
+
           write (outfile, 9999) "Displacement", displacement
 
 C         Jitter
@@ -76,7 +79,7 @@ C         Jitter
           write (outfile, 9999) "Jitter", jitter
 
 C         Stability - t_d = 2sec, then rms them all
-          do 20 i = 0, 4
+          do 20 i = 0,4
               idxstart = int(2*i/timedelta) + 1
               idxend   = idxstart + 2/timedelta
               displacements(i+1) = sum(timeseries(idxstart:idxend)) 
