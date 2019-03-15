@@ -24,17 +24,21 @@ C         Number of data points
           parameter (timeseriesfile  = 4)
 C         Timeseries data, high and low frequencies (Hz), 
 C         the total timespan (sec), and the time interval between measurements
-          real*16 timeseries(N), t(N), highfreq, lowfreq, 
+          real*16 timeseries(N), t(N), highfreq, slope, amplitude,
      &           displacements(5), timespan, timedelta, accuracy, 
-     &           displacement, jitter, stability
+     &           displacement, jitter, stability, PI
 C         10 seconds of data
-          parameter (timespan  = 10.0)
+          parameter (timespan = 10)
 C         10 Hz
-          parameter (highfreq  = 10.0)
-C         0.1 Hz
-          parameter (lowfreq   =  0.1)
+          parameter (highfreq = 10)
+C         Sine amplitude
+          parameter (amplitude = 5)
+C         Continious bias
+          parameter (slope =  1)
 C         1000 points per second
           parameter (timedelta = 0.001)
+C         Have to compute pi ourselves
+          parameter (PI = 4*atan(1.0_16))
 C         discards decimal when going real -> int, get 9999 instead of 10000 so add 1
           numsteps = timespan / timedelta + 1
 
@@ -48,7 +52,8 @@ C         Input/Output
 
           write (outfile, *) "Initial Conditions"
           write (outfile, 9999) "High frequency", highfreq
-          write (outfile, 9999) "Low frequency",  lowfreq
+          write (outfile, 9999) "Amplitude",      amplitude
+          write (outfile, 9999) "Slope",          slope
           write (outfile, 9999) "Time span",      timespan
           write (outfile, 9999) "Time delta",     timedelta
           write (outfile, 9998) "Num Steps",      numsteps
@@ -60,7 +65,8 @@ C         Compute pointing error over the timeseries
             t(i+1) = i*timedelta
 10        continue
 
-          timeseries = sin(lowfreq*t) + sin(highfreq*t)
+C         Compute timeseries - Linear slope + high freq jitter
+          timeseries = slope*t + amplitude*sin(highfreq*2*PI*t)
 
 C         Pointing accuracy - RMS of pointing error over time
           accuracy = sqrt(sum(timeseries**2) / N)
