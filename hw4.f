@@ -43,7 +43,7 @@ C         discards decimal when going real -> int, get 9999 instead of 10000 so 
           numsteps = timespan / timedelta + 1
 
 C         Input/Output
-          open(outfile, file="output", form="formatted",
+          open (outfile, file="output", form="formatted",
      &         iostat=ierr)
           if (ierr .ne. 0) then
               print *, "Couldn't write to file 'output'"
@@ -93,18 +93,18 @@ C         Stability - t_d = 2sec, then rms them all
 20        continue
         
           stability = sum((displacements(1:4)-displacements(2:5))**2)
-          stability = stability / 4
+          stability = sqrt(stability / 4)
 
           write (outfile, 9999) "Stability", stability
 
 C         Close output file
-          close(outfile, iostat=ierr)
+          close (outfile, iostat=ierr)
           if (ierr .ne. 0) then
               print *, "Couldn't close file 'output'"
           end if
 
 C         Write out pointing error over time for separate analysis
-          open(timeseriesfile, file="timeseries", form="formatted", 
+          open (timeseriesfile, file="timeseries", form="formatted", 
      &         iostat=ierr)
           if (ierr .ne. 0) then
               print *, "Couldn't write to file 'timeseries'"
@@ -117,7 +117,7 @@ C         Write out pointing error over time for separate analysis
             write (timeseriesfile, "(2f8.4)") t(i), timeseries(i)
 30        continue
 
-          close(timeseriesfile, iostat=ierr)
+          close (timeseriesfile, iostat=ierr)
           if (ierr .ne. 0) then
               print *, "Couldn't close file 'timeseries'"
           end if
@@ -126,7 +126,7 @@ C         Done
           stop
 
 C         Label + integer
-9998      format(A15, 1x, i9)
+9998      format (A15, 1x, i9)
 C         Label + float
-9999      format(A15, 1x, f15.8)
+9999      format (A15, 1x, f15.8)
       end program homework4
