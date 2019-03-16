@@ -39,8 +39,13 @@ C         1000 points per second
           parameter (timedelta = 0.001)
 C         Have to compute pi ourselves
           parameter (PI = 4*atan(1.0_16))
+
 C         discards decimal when going real -> int, get 9999 instead of 10000 so add 1
           numsteps = timespan / timedelta + 1
+          if (numsteps > N) then
+              print *, "timestep too small!"
+              stop
+          end if
 
 C         Input/Output
           open (outfile, file="output", form="formatted",
